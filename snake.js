@@ -16,11 +16,12 @@ export function update() {
 }
 
 export function draw(gameBoard) {
-    snakeBody.forEach(segment => {
+    snakeBody.forEach((segment, index) => {
         const snakeElement = document.createElement('div')
         snakeElement.style.gridRowStart = segment.y
         snakeElement.style.gridColumnStart = segment.x
         snakeElement.classList.add('snake')
+        if (index === 0) { snakeElement.classList.add('snake-head')}
         gameBoard.appendChild(snakeElement)
     })
 }
@@ -29,10 +30,19 @@ export function expandSnake(amount) {
     newSegments += amount
 }
 
-export function onSnake(position) { 
-    return snakeBody.some(segment => {
+export function onSnake(position, { ignoreHead = false } = {}) { 
+    return snakeBody.some((segment, index) => {
+        if (ignoreHead && index === 0) return false
         return equalPositions(segment, position)
     })
+}
+
+export function getSnakeHead() {
+    return snakeBody[0]
+}
+
+export function snakeIntersection() {
+    return onSnake(snakeBody[0], { ignoreHead: true })
 }
 
 function equalPositions(pos1, pos2) {
